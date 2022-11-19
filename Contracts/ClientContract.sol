@@ -12,6 +12,9 @@ import "@chainlink/contracts/src/v0.8/ConfirmedOwner.sol";
 contract ConsumerContract is ChainlinkClient, ConfirmedOwner {
     using Chainlink for Chainlink.Request;
 
+    bytes32 private jobId;
+    uint256 private fee;
+
     uint256 private constant ORACLE_PAYMENT = 1 * LINK_DIVISIBILITY; // 1 * 10**18
     string public lastRetrievedInfo;
 
@@ -27,25 +30,23 @@ contract ConsumerContract is ChainlinkClient, ConfirmedOwner {
      */
     constructor() ConfirmedOwner(msg.sender) {
         setChainlinkToken(0x326C977E6efc84E512bB9C30f76E30c160eD06FB);
+        setChainlinkOracle(0x0a3575399503b3891bB31f90b55BBF5d88D6F9b2);
+        jobId = "9f6637f0336f4f97b75538996c223e22";
+        fee = (1 * LINK_DIVISIBILITY) / 10; 
     }
 
     function requestInfo(
-        address _oracle,
-        string memory _jobId,
         string memory date,         // needs to change to date
         string memory heartRate,      /// heartrate
         string memory id              //// id
-    ) public onlyOwner {
-        Chainlink.Request memory req = buildOperatorRequest(
-            stringToBytes32(_jobId),
-            this.fulfillRequestInfo.selector
-        );
-
+    ) external returns (bytes32 requestId) {
+        Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfillRequestInfo.selector);
+        
         req.add("date", date);
         req.add("heartRate", heartRate);
         req.add("id", id);
         
-        sendOperatorRequestTo(_oracle, req, ORACLE_PAYMENT);
+        return sendChainlinkRequest(req, fee);
     }
 
     function fulfillRequestInfo(bytes32 _requestId, string memory _info)

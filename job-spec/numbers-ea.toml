@@ -1,7 +1,6 @@
 type = "directrequest"
 schemaVersion = 1
 name = "ea-metacare-job"  #  TODO Pick a Job name
-# externalJobID = "93fd9200-63d2-462d-8dce-013a7fc75656"  -->  TODO REMOVE this as the node will auto-assign an external job ID.
 maxTaskDuration = "0s"
 contractAddress = "0x0a3575399503b3891bB31f90b55BBF5d88D6F9b2"   # TODO Update to your Operator / Oracle contract here and in submit_tx.
 minContractPaymentLinkJuels = "0"
