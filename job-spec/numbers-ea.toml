@@ -1,8 +1,8 @@
 type = "directrequest"
 schemaVersion = 1
-name = "ea-metacare-job"  #  TODO Pick a Job name
+name = "ea-metacare-job"
 maxTaskDuration = "0s"
-contractAddress = "0x0a3575399503b3891bB31f90b55BBF5d88D6F9b2"   # TODO Update to your Operator / Oracle contract here and in submit_tx.
+contractAddress = "0x51b17D53766D23aC7dB0434F530507f09760934F"
 minContractPaymentLinkJuels = "0"
 observationSource = """
     decode_log   [type=ethabidecodelog
@@ -11,7 +11,7 @@ observationSource = """
                   topics="$(jobRun.logTopics)"]
 
     decode_cbor  [type=cborparse data="$(decode_log.data)"]
-    fetch        [type=bridge name="darbease-ea-bridge" requestData="{\\"id\\": $(jobSpec.externalJobID), \\"data\\": { \\"date\\": $(decode_cbor.date) , \\"heartRate\\": $(decode_cbor.heartRate), \\"id\\": $(decode_cbor.id)}}"]
+    fetch        [type=bridge name="ea-bridge" requestData="{\\"id\\": $(jobSpec.externalJobID), \\"data\\": {\\"id\\": $(decode_cbor.id)}}"]
     parse        [type=jsonparse path="data,result" data="$(fetch)"]
     encode_data  [type=ethabiencode abi="(bytes32 requestId,string info)" data="{\\"requestId\\": $(decode_log.requestId),\\"info\\": $(parse) }"]
     encode_tx    [type=ethabiencode
