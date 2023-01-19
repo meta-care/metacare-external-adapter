@@ -30,20 +30,16 @@ contract ConsumerContract is ChainlinkClient, ConfirmedOwner {
      */
     constructor() ConfirmedOwner(msg.sender) {
         setChainlinkToken(0x326C977E6efc84E512bB9C30f76E30c160eD06FB);
-        setChainlinkOracle(0x0a3575399503b3891bB31f90b55BBF5d88D6F9b2);
-        jobId = "9f6637f0336f4f97b75538996c223e22";
+        setChainlinkOracle(0x51b17D53766D23aC7dB0434F530507f09760934F);
+        jobId = "f21d159187304eed8d4bc937855ae23a";
         fee = (1 * LINK_DIVISIBILITY) / 10; 
     }
 
     function requestInfo(
-        string memory date,         // needs to change to date
-        string memory heartRate,      /// heartrate
         string memory id              //// id
     ) external returns (bytes32 requestId) {
         Chainlink.Request memory req = buildChainlinkRequest(jobId, address(this), this.fulfillRequestInfo.selector);
         
-        req.add("date", date);
-        req.add("heartRate", heartRate);
         req.add("id", id);
         
         return sendChainlinkRequest(req, fee);
